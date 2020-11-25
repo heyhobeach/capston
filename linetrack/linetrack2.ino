@@ -9,8 +9,8 @@
 
 int g_carDirection =CAR_DIR_ST;
 
-int g_carSpeed=180;
-int t_carSpeed=255;//회전속도
+int g_carSpeed=130;
+int t_carSpeed=230;//회전속도
 
 #define ENA 6
 #define EN1 7
@@ -184,6 +184,17 @@ void It_mode_update()
   {
     g_carDirection=CAR_DIR_FW;
   }
+ /* else
+  if(return_cm0>=30)
+  {
+    g_carDirection=CAR_DIR_ST;
+  }
+  else
+  if(return_cm2>=30)
+  {
+    g_carDirection=CAR_DIR_ST;
+  }
+ */
   else
   if(return_cm1<10||!ll&&!rr)
   {
@@ -193,11 +204,13 @@ void It_mode_update()
   if(ll&&!rr)
   {
     g_carDirection=CAR_DIR_LF;
+    delay(30);
   }
   else
   if(rr&&!ll)
   {
     g_carDirection=CAR_DIR_RF;
+    delay(30);
   }
   
   
