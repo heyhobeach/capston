@@ -6,11 +6,15 @@
 
 #define TRIGGER_PIN1 8
 #define ECHO_PIN1 9
+#define TRIGGER_PIN2 10
+#define ECHO_PIN2 11
+#define TRIGGER_PIN3 12
+#define ECHO_PIN3 13
 
 int g_carDirection =CAR_DIR_ST;
 
 int g_carSpeed=130;
-int t_carSpeed=230;//회전속도
+int t_carSpeed=255;//회전속도
 
 #define ENA 6
 #define EN1 7
@@ -33,6 +37,10 @@ void init_car_controller_board()
 
   pinMode(TRIGGER_PIN1,OUTPUT);
   pinMode(ECHO_PIN1,INPUT);
+  pinMode(TRIGGER_PIN2,OUTPUT);
+  pinMode(ECHO_PIN2,INPUT);
+  pinMode(TRIGGER_PIN3,OUTPUT);
+  pinMode(ECHO_PIN3,INPUT);
 }
 void car_forward()
  {
@@ -172,31 +180,53 @@ int checkDistance1(){
   //delay(300);
   return cm;
 }
+int checkDistance2(){
+    long duration, cm;
+  digitalWrite(TRIGGER_PIN2,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIGGER_PIN2,LOW);
+  duration=pulseIn(ECHO_PIN2,HIGH);
+  cm=microsecondsToCentimeters(duration);
+  //delay(300);
+  return cm;
+}
+int checkDistance3(){
+    long duration, cm;
+  digitalWrite(TRIGGER_PIN3,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIGGER_PIN3,LOW);
+  duration=pulseIn(ECHO_PIN3,HIGH);
+  cm=microsecondsToCentimeters(duration);
+  //delay(300);
+  return cm;
+}
 
 void It_mode_update()
 {
-  int return_cm1;
+  int return_cm1,return_cm2,return_cm3;
   return_cm1=checkDistance1();
+  return_cm2=checkDistance2();
+  return_cm3=checkDistance3();
   int ll=It_isLeft();
   int rr=It_isRight();
   Serial.print(return_cm1);
-  if(return_cm1>20&&ll&&rr)
+  if(return_cm2>20&&ll&&rr)
   {
     g_carDirection=CAR_DIR_FW;
+   // delay(70);
   }
- /* else
-  if(return_cm0>=30)
+  else
+  if(return_cm1<10)
   {
     g_carDirection=CAR_DIR_ST;
   }
   else
-  if(return_cm2>=30)
+  if(return_cm3<10)
   {
     g_carDirection=CAR_DIR_ST;
   }
- */
   else
-  if(return_cm1<10||!ll&&!rr)
+  if(return_cm2<10||!ll&&!rr)
   {
     g_carDirection=CAR_DIR_ST;
   }
@@ -204,13 +234,13 @@ void It_mode_update()
   if(ll&&!rr)
   {
     g_carDirection=CAR_DIR_LF;
-    delay(30);
+    delay(10);
   }
   else
   if(rr&&!ll)
   {
     g_carDirection=CAR_DIR_RF;
-    delay(30);
+    delay(10);
   }
   
   
