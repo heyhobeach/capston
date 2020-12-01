@@ -209,28 +209,35 @@ void It_mode_update()
   return_cm3=checkDistance3();
   int ll=It_isLeft();
   int rr=It_isRight();
-  Serial.print(return_cm1);
-  if(return_cm2>20&&ll&&rr)
+    Serial.print("cm1: ");
+    Serial.println(return_cm1);
+    Serial.print("cm2: ");
+    Serial.println(return_cm2);
+    Serial.print("cm3: ");
+    Serial.println(return_cm3);
+    delay(300); 
+  if(return_cm1<20||return_cm2<20||return_cm3<20)
+  {
+    g_carDirection=CAR_DIR_ST;
+  }
+  else
+  if(return_cm2>=30&&return_cm2<=40&&ll&&rr)
   {
     g_carDirection=CAR_DIR_FW;
-   // delay(70);
+    
   }
   else
-  if(return_cm1<10)
+  if(return_cm2<=55 && return_cm2 >=50 && !ll&&!rr)
   {
     g_carDirection=CAR_DIR_ST;
   }
   else
-  if(return_cm3<10)
+ /* if(return_cm2>=25&&return_cm2<=30&&ll&&rr)
   {
-    g_carDirection=CAR_DIR_ST;
+    g_carDirection=CAR_DIR_BK;
+    delay(50);
   }
-  else
-  if(return_cm2<10||!ll&&!rr)
-  {
-    g_carDirection=CAR_DIR_ST;
-  }
-  else
+  else*/
   if(ll&&!rr)
   {
     g_carDirection=CAR_DIR_LF;
@@ -242,7 +249,6 @@ void It_mode_update()
     g_carDirection=CAR_DIR_RF;
     delay(10);
   }
-  
   
 }
 
