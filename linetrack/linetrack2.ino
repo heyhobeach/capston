@@ -1,8 +1,8 @@
-#define CAR_DIR_FW 0
-#define CAR_DIR_BK 1
-#define CAR_DIR_LF 2
-#define CAR_DIR_RF 3
-#define CAR_DIR_ST 4
+#define CAR_DIR_FW 0//0
+#define CAR_DIR_BK 4//1
+#define CAR_DIR_LF 2//2
+#define CAR_DIR_RF 1//3
+#define CAR_DIR_ST 3//4
 
 #define TRIGGER_PIN1 8
 #define ECHO_PIN1 9
@@ -10,6 +10,10 @@
 #define ECHO_PIN2 11
 #define TRIGGER_PIN3 12
 #define ECHO_PIN3 13
+
+#define SENSOR_THRESHOLD 200
+#define SENSOR_L B01
+#define SENSOR_R B10
 
 int g_carDirection =CAR_DIR_ST;
 
@@ -214,9 +218,8 @@ void It_mode_update()
     Serial.print("cm2: ");
     Serial.println(return_cm2);
     Serial.print("cm3: ");
-    Serial.println(return_cm3);
-    delay(300); 
-  if(return_cm1<20||return_cm2<20||return_cm3<20)
+    Serial.println(return_cm3); 
+  /*if(return_cm1<20||return_cm2<20||return_cm3<20)
   {
     g_carDirection=CAR_DIR_ST;
   }
@@ -232,12 +235,12 @@ void It_mode_update()
     g_carDirection=CAR_DIR_ST;
   }
   else
- /* if(return_cm2>=25&&return_cm2<=30&&ll&&rr)
+ if(return_cm2>=25&&return_cm2<=30&&ll&&rr)
   {
     g_carDirection=CAR_DIR_BK;
     delay(50);
   }
-  else*/
+  else
   if(ll&&!rr)
   {
     g_carDirection=CAR_DIR_LF;
@@ -248,7 +251,47 @@ void It_mode_update()
   {
     g_carDirection=CAR_DIR_RF;
     delay(10);
+  }*/
+  int onLine1 = ((analogRead(LT_MODULE_X0)>SENSOR_THRESHOLD)?SENSOR_L:0)|((analogRead(LT_MODULE_X1)>SENSOR_THRESHOLD)?SENSOR_R:0);
+  Serial.println(onLine1);
+  
+  if(return_cm2 <= 35 && return_cm2 >= 25 && onLine1==CAR_DIR_FW)
+  {
+    g_carDirection=CAR_DIR_FW;
+    Serial.println("FW");
   }
+  if(return_cm1<20 && return_cm1>15||return_cm2<20&&return_cm2>15||return_cm3<20&&return_cm3>15||onLine1==CAR_DIR_ST||return_cm2 > 40)
+  {
+    g_carDirection=CAR_DIR_ST;
+    Serial.println("ST");
+  }
+  else
+  if(return_cm2<=10 && onLine1==CAR_DIR_FW)
+  {
+    g_carDirection=CAR_DIR_BK;
+    Serial.println("BK");
+  }
+  if(onLine1==CAR_DIR_LF)
+  {
+    g_carDirection=CAR_DIR_LF;
+    Serial.println("LF");
+    delay(20);
+  }
+  else
+  if(onLine1==CAR_DIR_RF)
+  {
+    g_carDirection=CAR_DIR_RF;
+    Serial.println("RF");
+    delay(20);
+  }
+  /*else{
+    g_carDirection=CAR_DIR_ST;
+    Serial.println("ST");
+  }*/
+  /*else
+  if(onLine1==CAR_DIR_FW){
+    g_carDirection=CAR_DIR_ST;
+  }*/
   
 }
 
