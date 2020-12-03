@@ -17,17 +17,37 @@ void loop() {
 void printResult(HUSKYLENSResult result){
     if (result.command == COMMAND_RETURN_BLOCK){
         Serial.println(String()+F("ID=")+result.ID);
-        delay(1500);
+        delay(300);
     }
     else{
         Serial.println("Object unknown!");
-        delay(1500);
+        delay(300);
     }
 }
 
+void checkId(HUSKYLENSResult result){
+    if (result.command == COMMAND_RETURN_BLOCK){
+      if(result.ID==1){
+          Serial.println("1");
+        }
+    }
+    else{
+        Serial.println("Object unknown!");
+        delay(300);
+    }
+}
+
+void make_get(int num){
+      HUSKYLENSResult result1 = huskylens.get(num);
+      Serial.println(result1.ID);
+      if (result1.command == COMMAND_RETURN_BLOCK){
+        Serial.println(String()+F("ID=")+result1.ID+("Get Func"));
+        delay(300);
+    }
+}
 void huskyConnect() {
   Serial.begin(9600);
-    mySerial.begin(9600);
+  mySerial.begin(9600);
     while (!huskylens.begin(mySerial))
     {
         Serial.println(F("Begin failed!"));
@@ -58,6 +78,8 @@ void huskyActive() {
         while (huskylens.available())
         {
             HUSKYLENSResult result = huskylens.read();
+            checkId(result);
+            make_get(1);
             printResult(result);
         }
         delay(1000);    
