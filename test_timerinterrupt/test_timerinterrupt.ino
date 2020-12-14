@@ -31,10 +31,23 @@ bool state = LOW;
   const long forward_interval =850;    //전진 유지시간(전진 속도조절)  
 
 
-void car_forward(bool state){
+void car_forward(){
     //static boolean output = HIGH;
     digitalWrite(FW, state);
-    //state!=state;    
+      unsigned long currentMillis = millis();  
+     
+  //지난번 LED의 상태를 변경한 후 경과시간이 interval시간보다 크다면  
+  if(currentMillis - previousMillis >= forward_interval) {  
+    //LED의 상태를 변경한 시간을 기록한다.  
+    previousMillis = currentMillis;     
+        
+    if (state == LOW)//LED가 꺼진상태면  
+      state = HIGH; //LED를 켜진 상태로 하고   
+    else//LED가 켜진상태라면  
+      state = LOW; //LED를 꺼진상태로 한다.  
+    
+    //ledState변수에 저장된 값으로 ledPin핀의 상태를 설정한다.     
+    }   
 }
 
 void car_backward()
@@ -58,6 +71,11 @@ void car_backward()
   digitalWrite(BK,LOW);
  }
 
+ void reset_lr(){
+  digitalWrite(RF,LOW);
+  digitalWrite(LF,LOW);
+ }
+
 
 void init_car_controller_board()
 {  
@@ -78,7 +96,7 @@ void new_move(){
  void car_update(){
     if(g_carDirection==CAR_DIR_FW)
     {
-      car_forward(state); 
+      car_forward(); 
     }
     else
     if(g_carDirection==CAR_DIR_BK)
@@ -112,28 +130,14 @@ void setup() {
 
   /*MsTimer2::set(1000,car_stop);
   MsTimer2::start();*/
-  
-
 }
 
 
 
 void loop() {
     //현재 시간을 기록
-    //car_forward(true);  
-  unsigned long currentMillis = millis();  
-     
-  //지난번 LED의 상태를 변경한 후 경과시간이 interval시간보다 크다면  
-  if(currentMillis - previousMillis >= forward_interva) {  
-    //LED의 상태를 변경한 시간을 기록한다.  
-    previousMillis = currentMillis;     
-        
-    if (state == LOW)//LED가 꺼진상태면  
-      state = HIGH; //LED를 켜진 상태로 하고   
-    else//LED가 켜진상태라면  
-      state = LOW; //LED를 꺼진상태로 한다.  
-    
-    //ledState변수에 저장된 값으로 ledPin핀의 상태를 설정한다.  
-    car_forward(state);   
-}
+    //car_left();
+    //car_right();
+    reset_lr();
+    //car_forward();
 }
